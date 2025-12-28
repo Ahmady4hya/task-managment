@@ -43,5 +43,22 @@ export const routes: Routes = [
         loadComponent: () => import('./features/tasks/pages/task-form/task-form').then(m => m.TaskFormComponent)
       }
     ]
+  },
+  {
+    path: 'developers',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/developers/pages/developer-list/developer-list').then(m => m.DeveloperListComponent)
+      },
+      {
+        path: 'new',
+        loadComponent: () => import('./features/developers/pages/developer-form/developer-form').then(m => m.DeveloperFormComponent)
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () => import('./features/developers/pages/developer-form/developer-form').then(m => m.DeveloperFormComponent)
+      }
+    ]
   }
 ];

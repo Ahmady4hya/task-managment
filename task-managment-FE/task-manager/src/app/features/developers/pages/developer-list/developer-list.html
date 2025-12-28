@@ -1,0 +1,84 @@
+<div class="list-container">
+  <div class="list-header">
+    <div class="header-content">
+      <h1 class="list-title">Developers</h1>
+      <p class="list-subtitle">Manage your development team</p>
+    </div>
+    <button class="btn-create" (click)="onCreateDeveloper()">
+      <span class="btn-icon">+</span>
+      Add Developer
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading developers...</p>
+    </div>
+  }
+
+  @if (error && !loading) {
+    <div class="error-container">
+      <span class="error-icon">⚠️</span>
+      <p class="error-message">{{ error }}</p>
+      <button class="btn-retry" (click)="loadDevelopers()">
+        <span>🔄</span>
+        Retry
+      </button>
+    </div>
+  }
+
+  @if (!loading && !error) {
+    @if (developers.length > 0) {
+      <div class="developers-grid">
+        @for (developer of developers; track developer.id) {
+          <div class="developer-card">
+            <div class="card-header">
+              <div class="developer-avatar">
+                {{ getInitials(developer.name) }}
+              </div>
+              <div class="developer-actions">
+                <button class="btn-action" (click)="onEditDeveloper(developer.id!)" title="Edit">
+                  ✏️
+                </button>
+                <button class="btn-action delete" (click)="onDeleteDeveloper(developer.id!)" title="Delete">
+                  🗑️
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="developer-name">{{ developer.name }}</h3>
+              <p class="developer-email">{{ developer.email }}</p>
+              @if (developer.skills) {
+                <div class="developer-skills">
+                  <span class="skills-label">Skills:</span>
+                  <p class="skills-text">{{ developer.skills }}</p>
+                </div>
+              }
+            </div>
+            <div class="card-footer">
+              <div class="stat-item">
+                <span class="stat-icon">📁</span>
+                <span class="stat-text">{{ developer.projectCount || 0 }} Projects</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-icon">📋</span>
+                <span class="stat-text">{{ developer.taskCount || 0 }} Tasks</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <span class="empty-icon">👥</span>
+        <h2 class="empty-title">No Developers Yet</h2>
+        <p class="empty-message">Start building your team by adding developers</p>
+        <button class="btn-empty-action" (click)="onCreateDeveloper()">
+          <span class="btn-icon">+</span>
+          Add Your First Developer
+        </button>
+      </div>
+    }
+  }
+</div>

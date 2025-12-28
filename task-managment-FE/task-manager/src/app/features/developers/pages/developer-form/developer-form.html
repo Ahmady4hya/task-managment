@@ -1,0 +1,98 @@
+<div class="form-container">
+  <div class="form-header">
+    <h1 class="form-title">{{ pageTitle }}</h1>
+    <p class="form-subtitle">{{ isEditMode ? 'Update developer information' : 'Fill in the details to add a new developer' }}</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading developer...</p>
+    </div>
+  }
+
+  @if (error && !loading) {
+    <div class="error-container">
+      <span class="error-icon">⚠️</span>
+      <p class="error-message">{{ error }}</p>
+    </div>
+  }
+
+  @if (!loading) {
+    <form [formGroup]="developerForm" (ngSubmit)="onSubmit()" class="developer-form">
+      <div class="form-group">
+        <label for="name" class="form-label">
+          Name <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="form-input"
+          [class.invalid]="nameControl?.invalid && nameControl?.touched"
+          placeholder="Enter developer name"
+        />
+        @if (nameControl?.invalid && nameControl?.touched) {
+          <div class="error-messages">
+            @if (nameControl?.errors?.['required']) {
+              <p class="error-text">Name is required</p>
+            }
+            @if (nameControl?.errors?.['minlength']) {
+              <p class="error-text">Name must be at least 3 characters</p>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">
+          Email <span class="required">*</span>
+        </label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-input"
+          [class.invalid]="emailControl?.invalid && emailControl?.touched"
+          placeholder="developer@example.com"
+        />
+        @if (emailControl?.invalid && emailControl?.touched) {
+          <div class="error-messages">
+            @if (emailControl?.errors?.['required']) {
+              <p class="error-text">Email is required</p>
+            }
+            @if (emailControl?.errors?.['email']) {
+              <p class="error-text">Please enter a valid email address</p>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="skills" class="form-label">Skills</label>
+        <textarea
+          id="skills"
+          formControlName="skills"
+          class="form-textarea"
+          placeholder="e.g., Angular, TypeScript, Java, Spring Boot"
+          rows="4"
+        ></textarea>
+        <p class="form-hint">List the developer's technical skills and expertise</p>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+          Cancel
+        </button>
+        <button type="submit" class="btn-submit" [disabled]="developerForm.invalid || submitting">
+          @if (submitting) {
+            <span class="spinner-small"></span>
+          } @else {
+            <span class="btn-icon">💾</span>
+          }
+          {{ submitButtonText }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

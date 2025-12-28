@@ -12,7 +12,7 @@ import { Project } from '../../models/project.model';
   styleUrl: './project-form.scss',
   standalone: true
 })
-export class ProjectForm implements OnInit {
+export class ProjectFormComponent implements OnInit {
   projectForm: FormGroup;
   isEditMode: boolean = false;
   projectId: number | null = null;

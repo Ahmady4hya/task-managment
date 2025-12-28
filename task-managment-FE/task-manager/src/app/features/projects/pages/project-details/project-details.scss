@@ -260,61 +260,26 @@
         }
       }
 
-      .developers-grid {
+      .info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
 
-        .developer-card {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          padding: 1rem;
-          background-color: #f9fafb;
-          border-radius: 8px;
-          border: 1px solid #e5e7eb;
-          transition: all 0.2s;
-
-          &:hover {
-            background-color: #f3f4f6;
-            border-color: #d1d5db;
-          }
-
-          .developer-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
+        .info-item {
+          .info-label {
+            font-size: 0.85rem;
             font-weight: 600;
-            flex-shrink: 0;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
           }
 
-          .developer-info {
-            flex: 1;
-            min-width: 0;
-
-            .developer-name {
-              font-size: 1rem;
-              font-weight: 600;
-              color: #1f2937;
-              margin-bottom: 0.25rem;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            }
-
-            .developer-email {
-              font-size: 0.85rem;
-              color: #6b7280;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            }
+          .info-value {
+            font-size: 1rem;
+            color: #1f2937;
+            font-weight: 500;
+            word-wrap: break-word;
           }
         }
       }

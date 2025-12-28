@@ -12,7 +12,7 @@ import { ProjectCard } from '../../../../shared/ui-components/project-card/proje
   styleUrl: './project-list.scss',
   standalone: true
 })
-export class ProjectList implements OnInit {
+export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
   loading: boolean = false;
   error: string | null = null;

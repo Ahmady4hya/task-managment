@@ -1,0 +1,253 @@
+.project-list-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  // Page Header
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 2rem;
+
+    .header-content {
+      flex: 1;
+
+      .page-title {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+      }
+
+      .page-subtitle {
+        margin: 0;
+        font-size: 1rem;
+        color: #6b7280;
+      }
+    }
+
+    .btn-create {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      white-space: nowrap;
+
+      .btn-icon {
+        font-size: 1.2rem;
+      }
+
+      &:hover {
+        background-color: #2563eb;
+      }
+
+      &:active {
+        background-color: #1d4ed8;
+      }
+    }
+  }
+
+  // Loading State
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 1rem;
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  // Error State
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+    background-color: #fef2f2;
+    border-radius: 12px;
+    border: 1px solid #fecaca;
+
+    .error-icon {
+      font-size: 3rem;
+    }
+
+    .error-message {
+      margin: 0;
+      color: #991b1b;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .btn-retry {
+      margin-top: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #b91c1c;
+      }
+    }
+  }
+
+  // Empty State
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    border: 2px dashed #d1d5db;
+
+    .empty-icon {
+      font-size: 4rem;
+      opacity: 0.5;
+    }
+
+    .empty-title {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    .empty-message {
+      margin: 0;
+      color: #6b7280;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .btn-create-empty {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      .btn-icon {
+        font-size: 1.2rem;
+      }
+
+      &:hover {
+        background-color: #2563eb;
+      }
+    }
+  }
+
+  // Projects Grid
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .project-list-container {
+    padding: 1rem;
+
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .header-content {
+        .page-title {
+          font-size: 1.5rem;
+        }
+
+        .page-subtitle {
+          font-size: 0.9rem;
+        }
+      }
+
+      .btn-create {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .projects-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .project-list-container {
+    padding: 0.75rem;
+
+    .page-header {
+      .header-content {
+        .page-title {
+          font-size: 1.25rem;
+        }
+      }
+    }
+  }
+}

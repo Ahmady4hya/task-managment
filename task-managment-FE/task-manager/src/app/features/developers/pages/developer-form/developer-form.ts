@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DeveloperService } from '../../../../core/services/developer.service';
-import { Developer } from '../../../projects/models/developer.model';
 import { SpinnerComponent } from '../../../../shared/ui-components/spinner/spinner';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-developer-form',
@@ -13,53 +14,61 @@ import { SpinnerComponent } from '../../../../shared/ui-components/spinner/spinn
   templateUrl: './developer-form.html',
   styleUrls: ['./developer-form.scss']
 })
-export class DeveloperFormComponent implements OnInit {
-  developerForm: FormGroup;
-  isEditMode = false;
-  developerId: number | null = null;
-  loading = false;
-  error: string | null = null;
-  submitting = false;
+export class DeveloperFormComponent {
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private developerService = inject(DeveloperService);
 
-  constructor(
-    private fb: FormBuilder,
-    private developerService: DeveloperService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {
-    this.developerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      skills: ['']
-    });
-  }
+  loading = signal(false);
+  error = signal<string | null>(null);
+  submitting = signal(false);
 
-  ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      if (params['id'] && params['id'] !== 'new') {
-        this.isEditMode = true;
-        this.developerId = +params['id'];
-        this.loadDeveloper(this.developerId);
+  developerId = toSignal(
+    this.route.paramMap.pipe(
+      map(pm => {
+        const raw = pm.get('id');
+        if (!raw || raw === 'new') return null;
+        const n = Number(raw);
+        return Number.isFinite(n) ? n : null;
+      })
+    ),
+    { initialValue: null }
+  );
+
+  isEditMode = computed(() => this.developerId() !== null);
+
+  developerForm = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    email: ['', [Validators.required, Validators.email]],
+    skills: ['']
+  });
+
+  constructor() {
+    effect(() => {
+      const id = this.developerId();
+      if (id !== null) {
+        this.loadDeveloper(id);
       }
     });
   }
 
   loadDeveloper(id: number): void {
-    this.loading = true;
-    this.error = null;
+    this.loading.set(true);
+    this.error.set(null);
 
     this.developerService.getDeveloperById(id).subscribe({
       next: (developer) => {
         this.developerForm.patchValue({
           name: developer.name,
           email: developer.email,
-          skills: developer.skills || ''
+          skills: developer.skills ?? ''
         });
-        this.loading = false;
+        this.loading.set(false);
       },
       error: (err) => {
-        this.error = 'Failed to load developer. Please try again.';
-        this.loading = false;
+        this.error.set('Failed to load developer. Please try again.');
+        this.loading.set(false);
         console.error('Error loading developer:', err);
       }
     });
@@ -71,29 +80,32 @@ export class DeveloperFormComponent implements OnInit {
       return;
     }
 
-    this.submitting = true;
-    this.error = null;
+    this.submitting.set(true);
+    this.error.set(null);
 
-    const developerData: Developer = {
-      name: this.developerForm.value.name,
-      email: this.developerForm.value.email,
+    const developerData = {
+      name: this.developerForm.value.name!,
+      email: this.developerForm.value.email!,
       skills: this.developerForm.value.skills || undefined
     };
 
-    const operation = this.isEditMode && this.developerId
-      ? this.developerService.updateDeveloper(this.developerId, developerData)
+    const id = this.developerId();
+    const operation = id !== null
+      ? this.developerService.updateDeveloper(id, developerData)
       : this.developerService.createDeveloper(developerData);
 
     operation.subscribe({
       next: () => {
-        this.submitting = false;
+        this.submitting.set(false);
         this.router.navigate(['/developers']);
       },
       error: (err) => {
-        this.error = this.isEditMode
-          ? 'Failed to update developer. Please try again.'
-          : 'Failed to create developer. Please try again.';
-        this.submitting = false;
+        this.error.set(
+          id !== null
+            ? 'Failed to update developer. Please try again.'
+            : 'Failed to create developer. Please try again.'
+        );
+        this.submitting.set(false);
         console.error('Error saving developer:', err);
       }
     });
@@ -103,25 +115,13 @@ export class DeveloperFormComponent implements OnInit {
     this.router.navigate(['/developers']);
   }
 
-  get nameControl() {
-    return this.developerForm.get('name');
-  }
-
-  get emailControl() {
-    return this.developerForm.get('email');
-  }
-
-  get skillsControl() {
-    return this.developerForm.get('skills');
-  }
-
   get pageTitle(): string {
-    return this.isEditMode ? 'Edit Developer' : 'Add New Developer';
+    return this.isEditMode() ? 'Edit Developer' : 'Add New Developer';
   }
 
   get submitButtonText(): string {
-    return this.submitting
-      ? (this.isEditMode ? 'Updating...' : 'Creating...')
-      : (this.isEditMode ? 'Update Developer' : 'Add Developer');
+    return this.submitting()
+      ? (this.isEditMode() ? 'Updating...' : 'Creating...')
+      : (this.isEditMode() ? 'Update Developer' : 'Add Developer');
   }
 }

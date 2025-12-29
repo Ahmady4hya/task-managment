@@ -1,21 +1,21 @@
 <div class="form-container">
   <div class="form-header">
     <h1 class="form-title">{{ pageTitle }}</h1>
-    <p class="form-subtitle">{{ isEditMode ? 'Update developer information' : 'Fill in the details to add a new developer' }}</p>
+    <p class="form-subtitle">{{ isEditMode() ? 'Update developer information' : 'Fill in the details to add a new developer' }}</p>
   </div>
 
-  @if (loading) {
+  @if (loading()) {
     <app-spinner size="medium" message="Loading developer..."></app-spinner>
   }
 
-  @if (error && !loading) {
+  @if (error() && !loading()) {
     <div class="error-container">
       <span class="error-icon">⚠️</span>
-      <p class="error-message">{{ error }}</p>
+      <p class="error-message">{{ error() }}</p>
     </div>
   }
 
-  @if (!loading) {
+  @if (!loading()) {
     <form [formGroup]="developerForm" (ngSubmit)="onSubmit()" class="developer-form">
       <div class="form-group">
         <label for="name" class="form-label">
@@ -26,15 +26,15 @@
           id="name"
           formControlName="name"
           class="form-input"
-          [class.invalid]="nameControl?.invalid && nameControl?.touched"
+          [class.invalid]="developerForm.get('name')?.invalid && developerForm.get('name')?.touched"
           placeholder="Enter developer name"
         />
-        @if (nameControl?.invalid && nameControl?.touched) {
+        @if (developerForm.get('name')?.invalid && developerForm.get('name')?.touched) {
           <div class="error-messages">
-            @if (nameControl?.errors?.['required']) {
+            @if (developerForm.get('name')?.errors?.['required']) {
               <p class="error-text">Name is required</p>
             }
-            @if (nameControl?.errors?.['minlength']) {
+            @if (developerForm.get('name')?.errors?.['minlength']) {
               <p class="error-text">Name must be at least 3 characters</p>
             }
           </div>
@@ -50,15 +50,15 @@
           id="email"
           formControlName="email"
           class="form-input"
-          [class.invalid]="emailControl?.invalid && emailControl?.touched"
+          [class.invalid]="developerForm.get('email')?.invalid && developerForm.get('email')?.touched"
           placeholder="developer@example.com"
         />
-        @if (emailControl?.invalid && emailControl?.touched) {
+        @if (developerForm.get('email')?.invalid && developerForm.get('email')?.touched) {
           <div class="error-messages">
-            @if (emailControl?.errors?.['required']) {
+            @if (developerForm.get('email')?.errors?.['required']) {
               <p class="error-text">Email is required</p>
             }
-            @if (emailControl?.errors?.['email']) {
+            @if (developerForm.get('email')?.errors?.['email']) {
               <p class="error-text">Please enter a valid email address</p>
             }
           </div>
@@ -81,8 +81,8 @@
         <button type="button" class="btn-cancel" (click)="onCancel()">
           Cancel
         </button>
-        <button type="submit" class="btn-submit" [disabled]="developerForm.invalid || submitting">
-          @if (submitting) {
+        <button type="submit" class="btn-submit" [disabled]="developerForm.invalid || submitting()">
+          @if (submitting()) {
             <span class="spinner-small"></span>
           } @else {
             <span class="btn-icon">💾</span>

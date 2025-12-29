@@ -17,12 +17,10 @@ export class TaskBoardComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  // Task columns for Kanban board
   todoTasks: Task[] = [];
   inProgressTasks: Task[] = [];
   doneTasks: Task[] = [];
 
-  // Expose TaskStatus enum to template
   TaskStatus = TaskStatus;
 
   constructor(

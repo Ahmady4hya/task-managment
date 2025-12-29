@@ -10,25 +10,25 @@
     </button>
   </div>
 
-  @if (loading) {
+  @if (developersResource.isLoading()) {
     <app-spinner size="large" message="Loading developers..."></app-spinner>
   }
 
-  @if (error && !loading) {
+  @if (developersResource.error() && !developersResource.isLoading()) {
     <div class="error-container">
       <span class="error-icon">⚠️</span>
-      <p class="error-message">{{ error }}</p>
-      <button class="btn-retry" (click)="loadDevelopers()">
+      <p class="error-message">Failed to load developers. Please try again.</p>
+      <button class="btn-retry" (click)="developersResource.reload()">
         <span>🔄</span>
         Retry
       </button>
     </div>
   }
 
-  @if (!loading && !error) {
-    @if (developers.length > 0) {
+  @if (!developersResource.isLoading() && !developersResource.error() && developersResource.value()) {
+    @if (developersResource.value()!.length > 0) {
       <div class="developers-grid">
-        @for (developer of developers; track developer.id) {
+        @for (developer of developersResource.value()!; track developer.id) {
           <div class="developer-card">
             <div class="card-header">
               <div class="developer-avatar">
